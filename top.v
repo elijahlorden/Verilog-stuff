@@ -15,16 +15,19 @@ wire [7:0] key_data;
 wire key_broken;
 wire key_data_stb;
 
+wire [7:0] ascii_data;
+wire ascii_data_stb;
+
 binary_7seg_converter segConverter ( .clk(clk), .segments(segments), .segsel(segsel), .dispNum(num) );
+
 ps2Listener keyboardListener ( .clk(clk), .ps2clk(ps2clk), .ps2data(ps2data), .rx_data_out(ps2_rx_data), .rx_done_stb(rx_done_stb), .rx_enable(rx_enable)  );
 
 scancodeConverter scConverter( .clk(clk), .ps2_rx_stb(rx_done_stb), .ps2_rx_data(ps2_rx_data), .key_data(key_data), .key_broken(key_broken), .key_data_stb(key_data_stb) );
 
+keycodeConverter keyConverter ( .clk(clk), .key_data_stb(key_data_stb), .key_broken(key_broken), .key_data(key_data), .ascii_data(ascii_data), .ascii_data_stb(ascii_data_stb) );
+
 always @(posedge clk) begin
-	if (key_data_stb) begin
-		num[7:0] <= key_data;
-		num[8] <= key_broken;
-	end
+	if (ascii_data_stb) num[7:0] <= ascii_data;
 end
 
 endmodule
