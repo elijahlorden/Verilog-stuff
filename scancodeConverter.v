@@ -9,7 +9,7 @@ module scancodeConverter(
 	output reg key_data_stb = 0 //High for one clock cycle when a new keycode is ready
 );
 
-reg [47:0] scancode_buffer = 48'b0;
+reg [39:0] scancode_buffer = 48'b0;
 reg [7:0] keycode = 0;
 wire keycode_is_brk;
 
@@ -57,7 +57,7 @@ always @* begin
 		8'h6B: keycode = 8'h49;		//'LARROW' key, 4A
 		8'h74: keycode = 8'h4A;		//'RARROW' key, 4B
 		//Keypad keys
-		8'h4A: keycode = 8'h54;		//'KP /  ' key, 54
+		8'h4A: keycode = 8'h59;		//'KP /  ' key, 59
 		8'h5A: keycode = 8'h30;		//'KP ENT' key, 30
 		default: keycode = 8'h00;
 	endcase
