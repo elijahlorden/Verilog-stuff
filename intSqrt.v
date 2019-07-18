@@ -3,8 +3,8 @@
 module intSqrt(
 	input clk,
 	input [30:0] n, //This module assumes that the 
-	input start,
-	output reg done_stb,
+	input calc,
+	output reg calc_done,
 	output reg [15:0] result
 );
 
@@ -20,17 +20,19 @@ reg [15:0] candidateResult = 0;
 reg [2:0] state = 0;
 
 initial begin
-	done_stb = 0;
+	result = 16'd0;
+	calc_done = 1'b1;
 end
 
 always @(posedge clk) begin
 	case(state)
 		state_idle:
 			begin
-				if (start) begin
+				if (calc) begin
 					state <= state_findShift;
 					shift <= 6'd2;
 					nShifted <= n >> 'd2;
+					calc_done <= 1'b0;
 				end
 			end
 		state_findShift:
@@ -53,11 +55,10 @@ always @(posedge clk) begin
 			end
 			if (shift[5] || shift == 0) begin
 				state <= state_idle;
-				done_stb <= 1'b1;
+				calc_done <= 1'b1;
 			end
 		end
 	endcase
-	if (done_stb) done_stb <= 1'b0;
 end
 
 
